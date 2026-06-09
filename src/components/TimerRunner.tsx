@@ -58,88 +58,114 @@ export default function TimerRunner({
 
   const moveToNextStep =
     () => {
+      const nextIndex =
+        index + 1;
+
       if (
-        index <
-        sequence.length - 1
+        nextIndex >=
+        sequence.length
       ) {
-        const next =
-          index + 1;
-
-        const nextStep =
-          sequence[next];
-
-        beep();
-
-        if (
-          nextStep.type ===
-          'timer'
-        ) {
-          speak(
-            'Timer started',
-          );
-        } else {
-          speak(
-            'Rest interval',
-          );
-        }
-
-        setIndex(next);
-
-        setRemaining(
-          nextStep.duration,
-        );
-      } else {
         sendNotification(
           'Session Complete',
           'Great Job!',
         );
 
         speak(
-          'Session complete. Great job.',
+          'Session complete. Great job.'
         );
 
         setCompleted(
           true,
         );
+
+        return;
       }
+
+      const nextStep =
+        sequence[nextIndex];
+
+      beep();
+
+      if (
+        nextStep.type ===
+        'timer'
+      ) {
+        speak(
+          'Timer started'
+        );
+      } else {
+        speak(
+          'Rest interval'
+        );
+      }
+
+      setIndex(
+        nextIndex,
+      );
+
+      setRemaining(
+        nextStep.duration,
+      );
     };
 
   useEffect(() => {
     if (
       paused ||
-      completed
+      completed ||
+      sequence.length === 0
     ) {
       return;
     }
 
-    const interval =
+    const timer =
       setInterval(() => {
-        setRemaining(prev => {
-          if (prev > 1) {
-            return prev - 1;
-          }
+        setRemaining(
+          current => {
+            if (
+              current > 1
+            ) {
+              return (
+                current - 1
+              );
+            }
 
-          moveToNextStep();
-
-          return 0;
-        });
+            return 0;
+          },
+        );
       }, 1000);
 
     return () =>
       clearInterval(
-        interval,
+        timer,
       );
   }, [
     paused,
     completed,
-    index,
+    sequence.length,
+  ]);
+
+  useEffect(() => {
+    if (
+      remaining === 0 &&
+      !completed
+    ) {
+      moveToNextStep();
+    }
+  }, [
+    remaining,
+    completed,
   ]);
 
   if (completed) {
     return (
       <Stack
         spacing={3}
-        alignItems="center"
+        sx={{
+          alignItems:
+            'center',
+          textAlign:
+            'center',
+        }}
       >
         <Typography variant="h3">
           🎉 Session Complete
@@ -150,7 +176,8 @@ export default function TimerRunner({
         </Typography>
 
         <Typography>
-          All intervals finished.
+          All intervals
+          finished.
         </Typography>
 
         <Button
@@ -164,17 +191,31 @@ export default function TimerRunner({
   }
 
   const current =
-    sequence[index];
+    sequence[index] ??
+    null;
+
+  if (!current) {
+    return (
+      <Typography>
+        Loading...
+      </Typography>
+    );
+  }
 
   const progress =
-    ((index + 1) /
-      sequence.length) *
-    100;
+    sequence.length > 0
+      ? ((index + 1) /
+          sequence.length) *
+        100
+      : 0;
 
   return (
     <Stack
       spacing={3}
-      alignItems="center"
+      sx={{
+        alignItems:
+          'center',
+      }}
     >
       <LinearProgress
         variant="determinate"
@@ -197,15 +238,14 @@ export default function TimerRunner({
       </Typography>
 
       <Typography variant="h6">
-        Current:
-        {' '}
-        {current?.type ===
+        Current:{' '}
+        {current.type ===
         'timer'
           ? 'Timer'
           : 'Rest'}
       </Typography>
 
-      {current?.type ===
+      {current.type ===
         'rest' && (
         <>
           <Typography>
