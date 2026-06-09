@@ -65,10 +65,10 @@ export default function TimerRunner({
         nextIndex >=
         sequence.length
       ) {
-        sendNotification(
+        /*sendNotification(
           'Session Complete',
           'Great Job!',
-        );
+        );*/
 
         speak(
           'Session complete. Great job.'
