@@ -1,22 +1,67 @@
+let audioContext:
+  AudioContext | null =
+  null;
+
+export function unlockAudio() {
+  try {
+    if (!audioContext) {
+      audioContext =
+        new (
+          window.AudioContext ||
+          (
+            window as any
+          ).webkitAudioContext
+        )();
+    }
+
+    if (
+      audioContext.state ===
+      'suspended'
+    ) {
+      audioContext.resume();
+    }
+  } catch (error) {
+    console.error(
+      error,
+    );
+  }
+}
+
 export function beep() {
-  const audioContext =
-    new (
-      window.AudioContext ||
-      (
-        window as any
-      ).webkitAudioContext
-    )();
+  try {
+    if (!audioContext) {
+      return;
+    }
 
-  const oscillator =
-    audioContext.createOscillator();
+    const oscillator =
+      audioContext.createOscillator();
 
-  oscillator.connect(
-    audioContext.destination,
-  );
+    const gainNode =
+      audioContext.createGain();
 
-  oscillator.start();
+    oscillator.connect(
+      gainNode,
+    );
 
-  setTimeout(() => {
-    oscillator.stop();
-  }, 150);
+    gainNode.connect(
+      audioContext.destination,
+    );
+
+    oscillator.frequency.value =
+      880;
+
+    gainNode.gain.value =
+      0.2;
+
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime +
+        0.15,
+    );
+  } catch (error) {
+    console.error(
+      error,
+    );
+  }
 }

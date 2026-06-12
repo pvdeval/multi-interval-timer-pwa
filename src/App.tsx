@@ -32,6 +32,11 @@ import {
   requestNotificationPermission,
 } from './utils/notifications';
 
+import {
+  unlockAudio,
+  beep,
+} from './utils/sound';
+
 export default function App() {
   const [running, setRunning] =
     useState(false);
@@ -67,6 +72,13 @@ export default function App() {
     rest: number,
     msg: string,
   ) => {
+    // iPhone Safari audio unlock
+    unlockAudio();
+
+    // temporary test beep
+    // remove later if desired
+    beep();
+
     const generatedSequence =
       buildSequence(
         blocks,
@@ -111,9 +123,13 @@ export default function App() {
           <Stack
             direction="row"
             spacing={1}
-            alignItems="center"
-            justifyContent="flex-end"
-            mb={2}
+            sx={{
+              alignItems:
+                'center',
+              justifyContent:
+                'flex-end',
+              mb: 2,
+            }}
           >
             <Typography>
               🌞
