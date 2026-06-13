@@ -25,14 +25,13 @@ import type {
 import {
   formatTime,
 } from '../utils/timerEngine';
-
+``
 import {
   beep,
+  doubleBeep,
+  tripleBeep,
 } from '../utils/sound';
 
-import {
-  speak,
-} from '../utils/speech';
 
 interface Props {
   sequence: SessionStep[];
@@ -74,9 +73,7 @@ export default function TimerRunner({
           'Great Job!',
         );*/
 
-        speak(
-          'Session complete. Great job.'
-        );
+        tripleBeep();
 
         setCompleted(
           true,
@@ -88,20 +85,14 @@ export default function TimerRunner({
       const nextStep =
         sequence[nextIndex];
 
-      beep();
-
-      if (
-        nextStep.type ===
-        'timer'
-      ) {
-        speak(
-          'Timer started'
-        );
-      } else {
-        speak(
-          'Rest interval'
-        );
-      }
+     if (
+  nextStep.type ===
+  'timer'
+) {
+  beep();
+} else {
+  doubleBeep();
+}
 
       setIndex(
         nextIndex,

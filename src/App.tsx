@@ -33,7 +33,7 @@ import {
 } from './utils/notifications';
 
 import {
-  unlockAudio,
+  //unlockAudio,
   beep,
 } from './utils/sound';
 
@@ -86,7 +86,7 @@ export default function App() {
     msg: string,
   ) => {
     // iPhone Safari audio unlock
-    unlockAudio();
+    //unlockAudio();
 
     // temporary test beep
     // remove later if desired

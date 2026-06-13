@@ -2,53 +2,44 @@ let audioContext:
   AudioContext | null =
   null;
 
-export function unlockAudio() {
-  try {
-    if (!audioContext) {
-      audioContext =
-        new (
-          window.AudioContext ||
-          (
-            window as any
-          ).webkitAudioContext
-        )();
-    }
-
-    if (
-      audioContext.state ===
-      'suspended'
-    ) {
-      audioContext.resume();
-    }
-  } catch (error) {
-    console.error(
-      error,
-    );
+function getAudioContext() {
+  if (!audioContext) {
+    audioContext =
+      new (
+        window.AudioContext ||
+        (
+          window as any
+        ).webkitAudioContext
+      )();
   }
+
+  return audioContext;
 }
 
-export function beep() {
+export function beep(
+  frequency = 880,
+  duration = 150,
+) {
   try {
-    if (!audioContext) {
-      return;
-    }
+    const ctx =
+      getAudioContext();
 
     const oscillator =
-      audioContext.createOscillator();
+      ctx.createOscillator();
 
     const gainNode =
-      audioContext.createGain();
+      ctx.createGain();
 
     oscillator.connect(
       gainNode,
     );
 
     gainNode.connect(
-      audioContext.destination,
+      ctx.destination,
     );
 
     oscillator.frequency.value =
-      880;
+      frequency;
 
     gainNode.gain.value =
       0.2;
@@ -56,12 +47,32 @@ export function beep() {
     oscillator.start();
 
     oscillator.stop(
-      audioContext.currentTime +
-        0.15,
+      ctx.currentTime +
+        duration / 1000,
     );
   } catch (error) {
     console.error(
       error,
     );
   }
+}
+
+export function doubleBeep() {
+  beep();
+
+  setTimeout(() => {
+    beep();
+  }, 250);
+}
+
+export function tripleBeep() {
+  beep();
+
+  setTimeout(() => {
+    beep();
+  }, 250);
+
+  setTimeout(() => {
+    beep();
+  }, 500);
 }
