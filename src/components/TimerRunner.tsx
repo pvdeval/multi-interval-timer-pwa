@@ -27,10 +27,6 @@ import {
 } from '../utils/timerEngine';
 
 import {
-  sendNotification,
-} from '../utils/notifications';
-
-import {
   beep,
 } from '../utils/sound';
 
