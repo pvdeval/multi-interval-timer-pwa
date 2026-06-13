@@ -57,16 +57,29 @@ export default function App() {
     requestNotificationPermission();
   }, []);
 
-  const theme =
-    createTheme({
-      palette: {
-        mode:
-          darkMode
-            ? 'dark'
-            : 'light',
-      },
-    });
+ const theme =
+  createTheme({
+    palette: {
+      mode:
+        darkMode
+          ? 'dark'
+          : 'light',
 
+      primary: {
+        main:
+          darkMode
+            ? '#60A5FA'
+            : '#2563EB',
+      },
+
+      background: {
+        default:
+          darkMode
+            ? '#0F172A'
+            : '#F8FAFC',
+      },
+    },
+  });
   const startSession = (
     blocks: TimerBlock[],
     rest: number,

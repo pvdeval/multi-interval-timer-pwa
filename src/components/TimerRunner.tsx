@@ -1,4 +1,11 @@
 import {
+  CircularProgressbar,
+  buildStyles,
+} from 'react-circular-progressbar';
+
+import 'react-circular-progressbar/dist/styles.css';
+
+import {
   useEffect,
   useState,
 } from 'react';
@@ -8,6 +15,7 @@ import {
   LinearProgress,
   Stack,
   Typography,
+  Paper,
 } from '@mui/material';
 
 import type {
@@ -157,38 +165,45 @@ export default function TimerRunner({
   ]);
 
   if (completed) {
-    return (
-      <Stack
-        spacing={3}
-        sx={{
-          alignItems:
-            'center',
-          textAlign:
-            'center',
-        }}
+  return (
+    <Stack
+      spacing={4}
+      sx={{
+        alignItems: 'center',
+        textAlign: 'center',
+        py: 4,
+      }}
+    >
+      <Typography
+        variant="h1"
       >
-        <Typography variant="h3">
-          🎉 Session Complete
-        </Typography>
+        🎉
+      </Typography>
 
-        <Typography variant="h6">
-          Great Job!
-        </Typography>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+      >
+        Workout Complete
+      </Typography>
 
-        <Typography>
-          All intervals
-          finished.
-        </Typography>
+      <Typography
+        color="text.secondary"
+      >
+        Great job finishing
+        your session!
+      </Typography>
 
-        <Button
-          variant="contained"
-          onClick={onStop}
-        >
-          Start New Session
-        </Button>
-      </Stack>
-    );
-  }
+      <Button
+        variant="contained"
+        size="large"
+        onClick={onStop}
+      >
+        Start New Session
+      </Button>
+    </Stack>
+  );
+}
 
   const current =
     sequence[index] ??
@@ -217,49 +232,111 @@ export default function TimerRunner({
           'center',
       }}
     >
+    <Typography
+  variant="h5"
+  fontWeight="bold"
+>
+  Interval Trainer
+</Typography>
+
+<Typography
+  color="text.secondary"
+>
+  Stay focused
+</Typography>
       <LinearProgress
-        variant="determinate"
-        value={progress}
-        sx={{
-          width: '100%',
-          height: 10,
-        }}
-      />
+  variant="determinate"
+  value={progress}
+  sx={{
+    width: '100%',
+    height: 12,
+    borderRadius: 6,
+  }}
+/>
 
-      <Typography variant="h1">
-        {formatTime(
-          remaining,
-        )}
-      </Typography>
-
-      <Typography variant="h5">
-        Step {index + 1} of{' '}
-        {sequence.length}
-      </Typography>
-
-      <Typography variant="h6">
-        Current:{' '}
-        {current.type ===
+      <div
+  style={{
+    width: 220,
+    height: 220,
+  }}
+>
+  <CircularProgressbar
+    value={remaining}
+    maxValue={
+      current.duration
+    }
+    text={formatTime(
+      remaining,
+    )}
+    styles={buildStyles({
+      pathColor:
+        current.type ===
         'timer'
-          ? 'Timer'
-          : 'Rest'}
-      </Typography>
+          ? '#2563EB'
+          : '#16A34A',
+      trailColor:
+        '#E5E7EB',
+    })}
+  />
+</div>
+
+      <Paper
+  elevation={3}
+  sx={{
+    p: 3,
+    width: '100%',
+    textAlign: 'center',
+    borderRadius: 3,
+  }}
+>
+  <Typography
+    variant="h6"
+  >
+    {current.type ===
+    'timer'
+      ? '🔥 Work Interval'
+      : '🧘 Rest Interval'}
+  </Typography>
+
+  <Typography
+    color="text.secondary"
+    sx={{
+      mt: 1,
+    }}
+  >
+    Step {index + 1} of{' '}
+    {sequence.length}
+  </Typography>
+</Paper>
 
       {current.type ===
-        'rest' && (
-        <>
-          <Typography>
-            {message}
-          </Typography>
+  'rest' && (
+  <Paper
+    elevation={2}
+    sx={{
+      p: 3,
+      width: '100%',
+      textAlign: 'center',
+      borderRadius: 3,
+    }}
+  >
+    <Typography
+      color="primary"
+      fontWeight="bold"
+    >
+      {message}
+    </Typography>
 
-          <Typography
-            variant="h2"
-            color="primary"
-          >
-            {remaining}
-          </Typography>
-        </>
-      )}
+    <Typography
+      variant="h3"
+      sx={{
+        mt: 1,
+      }}
+    >
+      {remaining}
+    </Typography>
+  </Paper>
+)}
 
       <Stack
         direction="row"
@@ -267,6 +344,7 @@ export default function TimerRunner({
       >
         <Button
           variant="contained"
+          size="large"
           onClick={() =>
             setPaused(
               !paused,
@@ -280,6 +358,7 @@ export default function TimerRunner({
 
         <Button
           variant="outlined"
+          size="large"
           onClick={
             moveToNextStep
           }
@@ -290,6 +369,7 @@ export default function TimerRunner({
 
       <Button
         variant="outlined"
+        size="large"
         color="error"
         onClick={onStop}
       >
